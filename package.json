@@ -1,0 +1,23 @@
+{
+  "name": "excel-invoice-generator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "scratch.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chaynsaw/excel-invoice-generator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chaynsaw/excel-invoice-generator/issues"
+  },
+  "homepage": "https://github.com/chaynsaw/excel-invoice-generator#readme",
+  "dependencies": {
+    "xlsx": "^0.16.5"
+  }
+}
