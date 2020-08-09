@@ -2,10 +2,9 @@ XLSX = require('xlsx');
 /* output format determined by filename */
 
 const path = require('path')
-
+const port = 3000
 const express = require('express')
 const app = express()
-const port = 3000
 
 var bodyParser = require('body-parser');
 var multer = require('multer');
@@ -40,9 +39,14 @@ app.post('/promises', async function(req, res, next){
 	const sendExcelFile = await sendFile(req, res, next);
 })
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-})
+// app.listen(port, () => {
+//   console.log(`Example app listening at http://localhost:${port}`)
+// })
+var server_port = process.env.YOUR_PORT || process.env.PORT || 80;
+var server_host = process.env.YOUR_HOST || '0.0.0.0';
+app.listen(server_port, server_host, function() {
+    console.log('Listening on port %d', server_port);
+});
 
 const sendFile = (req, res, next) => {
 	const filename = "output.xlsx"
