@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/chaynsaw/excel-invoice-generator#readme",
   "dependencies": {
+    "express": "^4.17.1",
     "xlsx": "^0.16.5"
   }
 }

@@ -1,6 +1,48 @@
 XLSX = require('xlsx');
 /* output format determined by filename */
 const workbook = XLSX.utils.book_new();
+const path = require('path')
+
+const express = require('express')
+const app = express()
+const port = 3000
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+app.get('/write', (req, res) => {
+	// XLSX.writeFile(workbook, 'outbound.xlsx');
+	res.setHeader('Content-Type', 'application/vnd.ms-excel');
+	// res.setHeader("Content-Disposition", "attachment; filename=" + "out.xlsx");
+	res.sendFile('/Users/chaynorhsiao/code/excel-invoice-generator/outbound.xlsx')
+	// res.end()
+	// res.send('Writing file?')
+})
+
+app.get('/excel', function (req, res, next) {
+	const filename = "outbound.xlsx"
+  const options = {
+    root: path.join(__dirname),
+    headers: {
+      'Content-Type': 'application/vnd.ms-excel',
+      "Content-Disposition": "attachment; filename=" + filename
+    }
+  }
+
+  res.sendFile(filename, options, function (err) {
+    if (err) {
+      next(err)
+    } else {
+			console.log('Sent:', filename)
+    }
+  })
+})
+
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`)
+})
+
 var ws_name = "SheetJS";
 
 /* make worksheet */
@@ -66,14 +108,3 @@ while (dayNum < totalDaysWorked) {
 }
 ws[`E${offset}`] = { t: 'n', f: `SUM(E8:E${offset - 1})`}
 ws[`D${offset}`] = { t: 's', v: 'Total:'}
-
-// let date = new Date(2020, 8, 1)
-
-// for (i = 1; i <= totalDaysWorked; i++) {
-// 	cell = `A${offset + i}`
-// 	date = new Date(date.getTime() + 86400000)
-// 	ws[cell] = { v: date, t: 'd'}
-// }
-
-XLSX.writeFile(workbook, 'out.xlsx');
-/* at this point, out.xlsb is a file that you can distribute */
