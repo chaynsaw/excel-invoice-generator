@@ -7,13 +7,36 @@ const express = require('express')
 const app = express()
 const port = 3000
 
+var bodyParser = require('body-parser');
+var multer = require('multer');
+var upload = multer();
+
+app.set('view engine', 'pug');
+app.set('views', './views');
+
+// for parsing application/json
+app.use(bodyParser.json()); 
+
+// for parsing application/xwww-
+app.use(bodyParser.urlencoded({ extended: true })); 
+//form-urlencoded
+
+// for parsing multipart/form-data
+app.use(upload.array()); 
+app.use(express.static('public'));
+
+app.post('/', function(req, res){
+   console.log(req.body);
+	 res.send("recieved your request!");
+})
+
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
 
-app.get('/promises', async function(req, res, next){
-	const data = await createWorkbook();
+app.post('/promises', async function(req, res, next){
+	const data = await createWorkbook(req.body);
 	const sendExcelFile = await sendFile(req, res, next);
 })
 
@@ -40,14 +63,15 @@ const sendFile = (req, res, next) => {
   })
 }
 
-const createWorkbook = () => {
+const createWorkbook = (params) => {
+	console.log(params)
 	var ws_name = "Invoice";
 	const workbook = XLSX.utils.book_new();
 /* make worksheet */
 
-	const name = 'Chaynor Hsiao'
-	const address = '95 Rae Ave, San Francisco, CA'
-	const phone = 5105858082
+	const name = params.fullname
+	const address = params.address
+	const phone = params.phone
 
 	const invoiceNumber = ''
 	const invoiceDate = '8/5/20'
@@ -66,11 +90,11 @@ const createWorkbook = () => {
 	XLSX.utils.book_append_sheet(workbook, ws, ws_name);
 	ws['!ref'] = 'A1:G41'
 
-	let totalDaysWorked = 22
-	let dateInArrayForm = [2020, 8, 2]
+	let totalDaysWorked = params.days_worked
+	let firstDate = new Date(params.start_date)
 	let hoursPerDay = 8
 	let workDescription = 'Software Engineering'
-	let hourlyRate = 40
+	let hourlyRate = params.hourly_rate
 
 	offset = 8
 	ws['A7'] = { t: 's', v: 'DATES'}
@@ -80,7 +104,8 @@ const createWorkbook = () => {
 	ws['E7'] = { t: 's', v: 'TOTAL'}
 
 	ws['A4'] = { t: 's', v: 'Start Date'}
-	ws['B4'] = { t: 'd', v: new Date([dateInArrayForm])}
+	ws['B4'] = { t: 'd', v: firstDate}
+	console.log(ws['B4'])
 
 	let dayNum = 0
 	while (dayNum < totalDaysWorked) {
